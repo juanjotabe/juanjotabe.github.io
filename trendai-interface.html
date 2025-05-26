@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kako - Inditex Store Intelligence</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --zara-black: #000000;
+            --zara-white: #ffffff;
+            --zara-cream: #f8f5f2;
+            --zara-beige: #e8e2d9;
+            --zara-gray-light: #f5f5f5;
+            --zara-gray-medium: #cccccc;
+            --zara-gray-dark: #666666;
+            --zara-text: #1e1e1e;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --danger-red: #dc3545;
+            --info-blue: #17a2b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--zara-cream) 0%, var(--zara-beige) 100%);
+            color: var(--zara-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--zara-white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zara-black);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--zara-gray-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--zara-gray-light);
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .status-online {
+            color: var(--success-green);
+        }
+
+        .brand-carousel {
+            background: var(--zara-white);
+            border-top: 1px solid var(--zara-gray-medium);
+            border-bottom: 1px solid var(--zara-gray-medium);
+            overflow: hidden;
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-track {
+            display: flex;
+            animation: scroll 25s linear infinite;
+            gap: 3rem;
+        }
+
+        .carousel-item {
+            height: 50px;
+            width: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            opacity: 1;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .ai-chat-section {
+            background: var(--zara-white);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--zara-gray-light);
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--zara-black), var(--zara-gray-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--zara-white);
+            font-size: 1.2rem;
+        }
+
+        .voice-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .mic-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--zara-black);
+            color: var(--zara-white);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mic-button:hover {
+            background: var(--zara-gray-dark);
+            transform: scale(1.05);
+        }
+
+        .mic-button.active {
+            background: var(--danger-red);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .voice-status {
+            flex: 1;
+            padding: 1rem;
+            background: var(--zara-gray-light);
+            border-radius: 12px;
+            border-left: 4px solid var(--info-blue);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--zara-gray-medium);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--zara-white);
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--zara-black);
+        }
+
+        .response-section {
+            background: var(--zara-gray-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .progress-container {
+            margin: 2rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--zara-gray-medium);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--zara-black), var(--zara-gray-dark));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            background: var(--zara-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--zara-white);
+            font-size: 1.1rem;
+        }
+
+        .inventory-icon { background: var(--success-green); }
+        .scan-icon { background: var(--info-blue); }
+        .analytics-icon { background: var(--warning-orange); }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--zara-gray-light);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .status-low { color: var(--danger-red); }
+        .status-medium { color: var(--warning-orange); }
+        .status-good { color: var(--success-green); }
+
+        .scan-results {
+            background: var(--zara-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--zara-gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--danger-red);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sku-badge {
+            background: var(--zara-black);
+            color: var(--zara-white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .location-info {
+            font-size: 0.9rem;
+            color: var(--zara-gray-dark);
+            margin: 0.25rem 0;
+        }
+
+        .action-button {
+            background: var(--zara-black);
+            color: var(--zara-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .action-button:hover {
+            background: var(--zara-gray-dark);
+            transform: translateY(-2px);
+        }
+
+        .store-map {
+            width: 100%;
+            height: 400px;
+            background: var(--zara-gray-light);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--danger-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--zara-white);
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .map-marker:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .alert-section {
+            background: linear-gradient(135deg, #fff5f5, #fed7d7);
+            border: 1px solid var(--danger-red);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--danger-red);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .status-indicators {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        .typing-effect {
+            border-right: 2px solid var(--zara-black);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: var(--zara-black); }
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            border: 1px solid var(--success-green);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            color: var(--success-green);
+            font-weight: 600;
+        }
+        .detected-image-container {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: var(--zara-gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detected-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .result-card {
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">Kako</div>
+                <div class="subtitle">Intelligent Store Management • Inditex</div>
+            </div>
+            <div class="status-indicators">
+                <div class="status-item">
+                    <i class="fas fa-circle status-online"></i>
+                    <span>System Online</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-store"></i>
+                    <span>Store #247 Madrid</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">--:--</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="brand-carousel">
+        <div class="carousel-track">
+            <img src="assets/6_zara.png" alt="Zara" class="carousel-item">
+            <img src="assets/4_pullbear.png" alt="Pull & Bear" class="carousel-item">
+            <img src="assets/3_massimo_dutti.png" alt="Massimo Dutti" class="carousel-item">
+            <img src="assets/2_bershka.png" alt="Bershka" class="carousel-item">
+            <img src="assets/5_Stradivarius.png" alt="Stradivarius" class="carousel-item">
+            <img src="assets/7_ESCP_LOGO.png" alt="ESCP" class="carousel-item">
+            <img src="assets/1_inditex-logo-black.png" alt="Inditex" class="carousel-item">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="content-section">
+            <div class="ai-chat-section">
+                <div class="chat-header">
+                    <div class="ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h2>Talk to Kako</h2>
+                        <p>Your intelligent store management assistant</p>
+                    </div>
+                </div>
+
+                <div class="voice-section">
+                    <button class="mic-button" id="micButton">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <div class="voice-status" id="voiceStatus">
+                        <div><strong>Voice Commands Available</strong></div>
+                        <div>Click the microphone or type your request</div>
+                    </div>
+                </div>
+
+                <input type="text" class="text-input" id="textInput" placeholder="e.g., 'Start store scan', 'Inventory levels', 'Analyze turnover rates'">
+
+                <div class="response-section" id="responseSection" style="display: none;">
+                    <h3><i class="fas fa-comment-dots"></i> Kako Response</h3>
+                    <div id="responseContent"></div>
+                </div>
+            </div>
+
+            <div class="scan-results" id="scanResults" style="display: none;">
+                <div class="card-header">
+                    <div class="card-icon scan-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div>
+                        <h3>Store Scan Results</h3>
+                        <p>Misplaced items detected across all sections</p>
+                    </div>
+                </div>
+
+                <div class="alert-section">
+                    <div class="alert-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>5 Misplaced Items Detected</span>
+                    </div>
+                    <p>Immediate attention required for optimal store organization</p>
+                </div>
+
+                <div class="store-map" id="storeMap">
+                    <!-- Background store map image -->
+                    <img src="assets/Store/store_map.png" alt="Store Layout" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">
+                    
+                    <!-- Map markers for misplaced items -->
+                    <div class="map-marker" style="left: 75%; top: 30%; z-index: 10;" data-sku="M123" title="SKU M123 - Slim Fit Jeans">1</div>
+                    <div class="map-marker" style="left: 17%; top: 75%; z-index: 10;" data-sku="M456" title="SKU M456 - Denim Jacket">2</div>
+                    <div class="map-marker" style="left: 72%; top: 68%; z-index: 10;" data-sku="W789" title="SKU W789 - Sleeveless Ruffle Pink Shirt">3</div>
+                    <div class="map-marker" style="left: 85%; top: 72%; z-index: 10;" data-sku="W101" title="SKU W101 - Wide Leg Jeans">4</div>
+                    <div class="map-marker" style="left: 27%; top: 30%; z-index: 10;" data-sku="K112" title="SKU K112 - Cartoon Hoodie">5</div>
+                    
+                    <!-- Map legend -->
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-marker"></div>
+                            <span>Misplaced Item</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker relocated"></div>
+                            <span>Relocated</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results with images will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon inventory-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div>
+                        <h3>Inventory Status</h3>
+                        <p>Real-time stock levels</p>
+                    </div>
+                </div>
+                <div class="metric">
+                    <span>Total Items</span>
+                    <span class="metric-value">12,847</span>
+                </div>
+                <div class="metric">
+                    <span>Low Stock Items</span>
+                    <span class="metric-value status-low">23</span>
+                </div>
+                <div class="metric">
+                    <span>Overstock Items</span>
+                    <span class="metric-value status-medium">8</span>
+                </div>
+                <div class="metric">
+                    <span>Optimal Stock</span>
+                    <span class="metric-value status-good">98.2%</span>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon analytics-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h3>Performance</h3>
+                        <p>Today's metrics</p>
+                    </div>
+                </div>
+                <div class="metric">
+                    <span>Scan Accuracy</span>
+                    <span class="metric-value status-good">99.7%</span>
+                </div>
+                <div class="metric">
+                    <span>Misplaced Items</span>
+                    <span class="metric-value status-medium">5</span>
+                </div>
+                <div class="metric">
+                    <span>Avg Response Time</span>
+                    <span class="metric-value">1.2s</span>
+                </div>
+                <div class="metric">
+                    <span>System Uptime</span>
+                    <span class="metric-value status-good">99.9%</span>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon scan-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <h3>Recent Activity</h3>
+                        <p>Last 30 minutes</p>
+                    </div>
+                </div>
+                <div class="metric">
+                    <span>Last Full Scan</span>
+                    <span class="metric-value">12:34 PM</span>
+                </div>
+                <div class="metric">
+                    <span>Items Relocated</span>
+                    <span class="metric-value status-good">12</span>
+                </div>
+                <div class="metric">
+                    <span>Staff Alerts Sent</span>
+                    <span class="metric-value">3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false, 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Misplaced items data
+        const misplacedItems = [
+            {
+                sku: "M123",
+                item: "Slim Fit Jeans",
+                section: "Men",
+                detected: "Aisle 7, Floor 1, Women's Section, Shelf 2",
+                correct: "Aisle 3, Floor 1, Men's Section, Shelf 5",
+                action: "Relocate to Men's Section"
+            },
+            {
+                sku: "M456",
+                item: "Denim Jacket",
+                section: "Men",
+                detected: "Floor 2, Kids Area, Shelf 4",
+                correct: "Aisle 3, Floor 1, Men's Section, Shelf 5",
+                action: "Relocate to Men's Section"
+            },
+            {
+                sku: "W789",
+                item: "Sleeveless Ruffle Pink Shirt",
+                section: "Women",
+                detected: "Aisle 1, Men's Entry, Floor 1",
+                correct: "Aisle 4, Floor 1, Women's Section, Shelf 2",
+                action: "Relocate to Women's Section"
+            },
+            {
+                sku: "W101",
+                item: "Wide Leg Jeans",
+                section: "Women",
+                detected: "Kids Section, Aisle 5, Shelf 1",
+                correct: "Aisle 2, Floor 2, Women's Section, Shelf 6",
+                action: "Relocate to Women's Section"
+            },
+            {
+                sku: "K112",
+                item: "Cartoon Hoodie",
+                section: "Kids",
+                detected: "Women's Section, Floor 1, Back Wall",
+                correct: "Aisle 5, Floor 2, Kids Section, Shelf 1",
+                action: "Return to warehouse: Aisle 12, Rack 4"
+            }
+        ];
+
+        // Voice and text input handling
+        const micButton = document.getElementById('micButton');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const textInput = document.getElementById('textInput');
+        const responseSection = document.getElementById('responseSection');
+        const responseContent = document.getElementById('responseContent');
+        const scanResults = document.getElementById('scanResults');
+
+        let isListening = false;
+        let commandIndex = 0;
+        const commands = [
+            "Kako, please start scanning the store",
+            "Kako, show inventory levels for SKU M123",
+            "Kako, show me stock turnover rate for the Aura Spring Collection"
+        ];
+
+        micButton.addEventListener('click', () => {
+            if (!isListening) {
+                startListening();
+            } else {
+                stopListening();
+            }
+        });
+
+        textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processCommand(textInput.value.toLowerCase());
+            }
+        });
+
+        function startListening() {
+            isListening = true;
+            micButton.classList.add('active');
+            voiceStatus.innerHTML = `
+                <div><strong>🎙️ Listening...</strong></div>
+                <div>Processing voice input...</div>
+            `;
+
+            // Simulate voice recognition with typing effect
+            setTimeout(() => {
+                simulateTyping(commands[commandIndex % commands.length]);
+                commandIndex++;
+            }, 1000);
+        }
+
+        function stopListening() {
+            isListening = false;
+            micButton.classList.remove('active');
+            voiceStatus.innerHTML = `
+                <div><strong>Voice Commands Available</strong></div>
+                <div>Click the microphone or type your request</div>
+            `;
+        }
+
+        function simulateTyping(text) {
+            let i = 0;
+            const typingElement = document.createElement('div');
+            typingElement.innerHTML = '<strong>📝 Transcribing:</strong> <span class="typing-effect"></span>';
+            voiceStatus.appendChild(typingElement);
+            
+            const textSpan = typingElement.querySelector('.typing-effect');
+            
+            const typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    textSpan.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                    textSpan.classList.remove('typing-effect');
+                    setTimeout(() => {
+                        processCommand(text);
+                        stopListening();
+                    }, 1000);
+                }
+            }, 100);
+        }
+
+        function processCommand(command) {
+            responseSection.style.display = 'block';
+            
+            if (command.includes('scanning the store') || command.includes('scanning the store')) {
+                handleStoreScan();
+            } else if (command.includes('inventory') && command.includes('M123')) {
+                handleInventoryQuery();
+            } else if (command.includes('turnover') || command.includes('aura')) {
+                handleTurnoverQuery();
+            } else {
+                responseContent.innerHTML = `
+                    <div class="alert-section">
+                        <div class="alert-header">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Command Not Recognized</span>
+                        </div>
+                        <p>Try: "Start store scan", "Show inventory levels for SKU M123", or "Analyze turnover rates"</p>
+                    </div>
+                `;
+            }
+        }
+
+        function handleStoreScan() {
+            responseContent.innerHTML = `
+                <div class="success-message">
+                    <i class="fas fa-satellite-dish"></i> Store scan initiating...
+                </div>
+            `;
+
+            const sections = [
+                "🧥 Scanning Men's section...",
+                "👗 Scanning Women's section...",
+                "🧸 Scanning Kids' section..."
+            ];
+
+            let progress = 0;
+            let sectionIndex = 0;
+
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'progress-container';
+            progressContainer.innerHTML = `
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div id="scanMessage">Initializing scan...</div>
+            `;
+            responseContent.appendChild(progressContainer);
+
+            const progressFill = progressContainer.querySelector('.progress-fill');
+            const scanMessage = document.getElementById('scanMessage');
+
+            const scanInterval = setInterval(() => {
+                if (sectionIndex < sections.length) {
+                    scanMessage.textContent = sections[sectionIndex];
+                    progress = ((sectionIndex + 1) / sections.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    sectionIndex++;
+                } else {
+                    clearInterval(scanInterval);
+                    scanMessage.innerHTML = '<strong style="color: var(--success-green);">✅ All sections scanned successfully!</strong>';
+                    setTimeout(() => {
+                        showScanResults();
+                    }, 1000);
+                }
+            }, 2000);
+        }
+
+        function showScanResults() {
+            scanResults.style.display = 'block';
+            populateResults();
+            
+            // Add click handlers for map markers
+            document.querySelectorAll('.map-marker').forEach(marker => {
+                marker.addEventListener('click', (e) => {
+                    const sku = e.target.dataset.sku;
+                    highlightResult(sku);
+                });
+            });
+        }
+
+        function populateResults() {
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            misplacedItems.forEach(item => {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.id = `result-${item.sku}`;
+                
+                // Create image element for the detected item
+                const imgSrc = `assets/item_images/${item.sku}.jpg`;
+                const imgElement = `<div class="detected-image-container">
+                    <img src="${imgSrc}" alt="Detected ${item.item}" class="detected-image" 
+                         onerror="this.style.display='none'; this.parentElement.querySelector('.no-image').style.display='block'">
+                    <div class="no-image" style="display: none; padding: 1rem; text-align: center; color: var(--zara-gray-dark);">
+                        <i class="fas fa-camera-slash" style="font-size: 2rem;"></i>
+                        <p>Camera image not available</p>
+                    </div>
+                </div>`;
+
+                resultCard.innerHTML = `
+                    <div class="result-header">
+                        <span class="sku-badge">${item.sku}</span>
+                    </div>
+                    ${imgElement}
+                    <div class="item-name">${item.item}</div>
+                    <div class="location-info">
+                        <strong>Detected in:</strong> ${item.detected}
+                    </div>
+                    <div class="location-info">
+                        <strong>Should be:</strong> ${item.correct}
+                    </div>
+                    <button class="action-button" onclick="relocateItem('${item.sku}')">
+                        <i class="fas fa-arrow-right"></i> ${item.action}
+                    </button>
+                `;
+                resultsGrid.appendChild(resultCard);
+            });
+        }
+        function showImagePreview(src, title) {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.zIndex = '1000';
+            modal.style.cursor = 'pointer';
+            
+            modal.innerHTML = `
+                <div style="max-width: 90%; max-height: 90%; text-align: center;">
+                    <h3 style="color: white; margin-bottom: 1rem;">${title}</h3>
+                    <img src="${src}" style="max-width: 100%; max-height: 70vh; border-radius: 8px;"
+                         onerror="this.src='assets/no-image.jpg'">
+                    <p style="color: white; margin-top: 1rem;">Click anywhere to close</p>
+                </div>
+            `;
+            
+            modal.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            document.body.appendChild(modal);
+        }
+
+        function highlightResult(sku) {
+            // Remove previous highlights
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.style.border = '';
+                card.style.transform = '';
+            });
+
+            // Highlight selected result
+            const resultCard = document.getElementById(`result-${sku}`);
+            if (resultCard) {
+                resultCard.style.border = '3px solid var(--info-blue)';
+                resultCard.style.transform = 'scale(1.02)';
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+                const imgSrc = `assets/item_images/${sku}.jpg`;
+                showImagePreview(imgSrc, `SKU ${sku}`);
+        }
+
+        function relocateItem(sku) {
+            const resultCard = document.getElementById(`result-${sku}`);
+            if (resultCard) {
+                resultCard.innerHTML = `
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>Relocation request sent for SKU ${sku}</strong>
+                        <div style="margin-top: 0.5rem; font-weight: normal;">
+                            Staff member has been notified and will relocate this item.
+                        </div>
+                    </div>
+                `;
+
+                // Remove corresponding map marker
+                const marker = document.querySelector(`[data-sku="${sku}"]`);
+                if (marker) {
+                    marker.style.background = 'var(--success-green)';
+                    marker.innerHTML = '✓';
+                    setTimeout(() => {
+                        marker.style.display = 'none';
+                    }, 2000);
+                }
+
+                // Update metrics
+                updateMetrics();
+            }
+        }
+
+        function handleInventoryQuery() {
+            responseContent.innerHTML = `
+                <h3>📦 Inventory Levels - SKU M123</h3>
+                <div class="dashboard-card" style="margin-top: 1rem;">
+                    <div class="metric">
+                        <span><strong>SKU:</strong> M123</span>
+                        <span class="sku-badge">ACTIVE</span>
+                    </div>
+                    <div class="metric">
+                        <span><strong>Item:</strong> Slim Fit Jeans</span>
+                        <span></span>
+                    </div>
+                    <div class="metric">
+                        <span><strong>Current Stock:</strong></span>
+                        <span class="metric-value status-low">4 units</span>
+                    </div>
+                    <div class="metric">
+                        <span><strong>Minimum Stock:</strong></span>
+                        <span class="metric-value">15 units</span>
+                    </div>
+                    <div class="metric">
+                        <span><strong>Status:</strong></span>
+                        <span class="metric-value status-low">⚠️ LOW STOCK</span>
+                    </div>
+                </div>
+                <div class="alert-section" style="margin-top: 1rem;">
+                    <div class="alert-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Restock Recommendation</span>
+                    </div>
+                    <p>Immediate restock required. Suggested order quantity: 50 units</p>
+                    <button class="action-button" style="margin-top: 1rem;" onclick="createRestockOrder('M123')">
+                        <i class="fas fa-plus-circle"></i> Create Restock Order
+                    </button>
+                </div>
+            `;
+        }
+
+        function handleTurnoverQuery() {
+            responseContent.innerHTML = `
+                <h3>📊 Stock Turnover - Aura Spring Collection (Last 7 Days)</h3>
+                <div class="dashboard-card" style="margin-top: 1rem;">
+                    <div class="results-grid">
+                        <div class="result-card" style="border-left-color: var(--success-green);">
+                            <div class="sku-badge">BS101</div>
+                            <div class="item-name">Aura Fringe Dress</div>
+                            <div class="metric">
+                                <span>Units Sold:</span>
+                                <span class="metric-value status-good">58</span>
+                            </div>
+                            <div class="metric">
+                                <span>Avg Inventory:</span>
+                                <span class="metric-value">120</span>
+                            </div>
+                            <div class="metric">
+                                <span>Turnover Rate:</span>
+                                <span class="metric-value status-good">0.48</span>
+                            </div>
+                        </div>
+                        <div class="result-card" style="border-left-color: var(--success-green);">
+                            <div class="sku-badge">BS102</div>
+                            <div class="item-name">Crochet Crop Top</div>
+                            <div class="metric">
+                                <span>Units Sold:</span>
+                                <span class="metric-value status-good">42</span>
+                            </div>
+                            <div class="metric">
+                                <span>Avg Inventory:</span>
+                                <span class="metric-value">90</span>
+                            </div>
+                            <div class="metric">
+                                <span>Turnover Rate:</span>
+                                <span class="metric-value status-good">0.47</span>
+                            </div>
+                        </div>
+                        <div class="result-card" style="border-left-color: var(--warning-orange);">
+                            <div class="sku-badge">BS103</div>
+                            <div class="item-name">Flowy Printed Skirt</div>
+                            <div class="metric">
+                                <span>Units Sold:</span>
+                                <span class="metric-value status-medium">35</span>
+                            </div>
+                            <div class="metric">
+                                <span>Avg Inventory:</span>
+                                <span class="metric-value">85</span>
+                            </div>
+                            <div class="metric">
+                                <span>Turnover Rate:</span>
+                                <span class="metric-value status-medium">0.41</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert-section" style="margin-top: 1rem; background: linear-gradient(135deg, #fff8e1, #ffecb3); border-color: var(--warning-orange);">
+                    <div class="alert-header" style="color: var(--warning-orange);">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>AI Recommendation</span>
+                    </div>
+                    <p><strong>BS103 (Flowy Printed Skirt)</strong> shows the slowest turnover rate. Consider:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Repositioning to high-traffic areas</li>
+                        <li>Cross-merchandising with BS101 and BS102</li>
+                        <li>Promotional pricing strategy</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function createRestockOrder(sku) {
+            const alertDiv = document.querySelector('.alert-section');
+            alertDiv.innerHTML = `
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Restock Order Created</strong>
+                    <div style="margin-top: 0.5rem; font-weight: normal;">
+                        Order #RST-${sku}-${Date.now().toString().slice(-6)} has been sent to warehouse.
+                        Expected delivery: Tomorrow 9:00 AM
+                    </div>
+                </div>
+            `;
+            updateMetrics();
+        }
+
+        function updateMetrics() {
+            // Update sidebar metrics to reflect actions taken
+            const misplacedMetric = document.querySelector('.sidebar .metric:nth-child(2) .metric-value');
+            if (misplacedMetric && misplacedMetric.textContent !== '0') {
+                let current = parseInt(misplacedMetric.textContent) || 5;
+                current = Math.max(0, current - 1);
+                misplacedMetric.textContent = current;
+                
+                if (current === 0) {
+                    misplacedMetric.className = 'metric-value status-good';
+                } else if (current <= 2) {
+                    misplacedMetric.className = 'metric-value status-medium';
+                }
+            }
+        }
+
+        // Initialize some interactive features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add some sample recent activity updates
+            setTimeout(() => {
+                const recentActivity = document.querySelector('.sidebar .dashboard-card:last-child');
+                const itemsRelocated = recentActivity.querySelector('.metric:nth-child(2) .metric-value');
+                let count = parseInt(itemsRelocated.textContent) || 12;
+                
+                setInterval(() => {
+                    if (Math.random() > 0.7) { // 30% chance every 5 seconds
+                        count++;
+                        itemsRelocated.textContent = count;
+                    }
+                }, 5000);
+            }, 1000);
+
+            // Add hover effects to dashboard cards
+            document.querySelectorAll('.dashboard-card').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-4px)';
+                    card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.15)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'm':
+                        e.preventDefault();
+                        micButton.click();
+                        break;
+                    case 'k':
+                        e.preventDefault();
+                        textInput.focus();
+                        break;
+                    case '1':
+                        e.preventDefault();
+                        processCommand('start store scan');
+                        break;
+                }
+            }
+        });
+
+        // Add tooltip functionality
+        function addTooltips() {
+            const tooltips = [
+                { selector: '.mic-button', text: 'Click to start voice command (Ctrl+M)' },
+                { selector: '.text-input', text: 'Type your command here (Ctrl+K to focus)' },
+                { selector: '.map-marker', text: 'Click to highlight corresponding item' }
+            ];
+
+            tooltips.forEach(tooltip => {
+                document.querySelectorAll(tooltip.selector).forEach(element => {
+                    element.title = tooltip.text;
+                });
+            });
+        }
+
+        addTooltips();
+
+        // Status updates simulation
+        setInterval(() => {
+            const accuracy = document.querySelector('.sidebar .metric:nth-child(1) .metric-value');
+            if (accuracy && Math.random() > 0.8) {
+                const values = ['99.7%', '99.8%', '99.6%', '99.9%'];
+                accuracy.textContent = values[Math.floor(Math.random() * values.length)];
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
